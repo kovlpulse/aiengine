@@ -8,10 +8,10 @@
     },
     "RandomForestClassifier": {
         "best_params": {
-            "max_depth": null,
-            "max_features": "log2",
-            "min_samples_leaf": 1
+            "max_depth": 10,
+            "max_features": "sqrt",
+            "min_samples_leaf": 5
         },
-        "best_score": 0.9265629748536963
+        "best_score": 0.9154528240268798
     }
 }

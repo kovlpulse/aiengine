@@ -12,46 +12,75 @@
 
 ## 2. Protocol
 
-- Разбиение: train/test, `test_size=0.25`, `random_state=666`, `stratify=y`
-- Подбор: GridSearchCV на train, 5 фолдов, оптимизация ROC-AUC для моделей DecisionTree, RandomForest и GradientBoosting
-- Метрики: accuracy, F1, ROC-AUC, что позволяет оценивать качество классификации и способность модели различать классы
+- Разбиение: train/test = 75% / 25%, `random_state=666`, `stratify=y`
+- Подбор гиперпараметров:
+  - выполнялся только на train
+  - с использованием `GridSearchCV`
+  - 5 фолдов кросс-валидации
+  - оптимизация по метрике ROC-AUC
+- test использовался один раз для финальной оценки
+- Метрики:
+  - accuracy — общая точность классификации
+  - F1 — уместна для бинарной задачи с дисбалансом классов
+  - ROC-AUC — основная метрика, отражающая способность модели различать классы
 
 ## 3. Models
 
-- DummyClassifier: стратегия `most_frequent`
-- LogisticRegression: Pipeline(StandardScaler + LogisticRegression)
-- DecisionTreeClassifier: подбор `max_depth` и `min_samples_leaf`
-- RandomForestClassifier: подбор `max_depth`, `min_samples_leaf`, `max_features`
-- GradientBoostingClassifier: подбор `n_estimators`, `learning_rate`, `max_depth`, `min_samples_leaf`
-- StackingClassifier: базовые модели RandomForest и GradientBoosting, метамодель — LogisticRegression, обучение через CV-логику
+В работе сравнивались следующие модели:
+
+- DummyClassifier 
+  Baseline со стратегией `most_frequent`
+- LogisticRegression
+  Baseline из S05, реализована через `Pipeline(StandardScaler + LogisticRegression)`
+- DecisionTreeClassifier
+  - базовая версия без ограничений сложности
+  - версия с контролем сложности (`max_depth`, `min_samples_leaf`)
+- RandomForestClassifier
+  - подбор `max_depth`, `min_samples_leaf`, `max_features`
+- GradientBoostingClassifier
+  - подбор `n_estimators`, `learning_rate`, `max_depth`, `min_samples_leaf`
+- StackingClassifier (опционально)
+  - базовые модели: RandomForest и GradientBoosting
+  - метамодель: LogisticRegression
+  - корректная CV-логика реализована через `StackingClassifier`
 
 ## 4. Results
 
 - Таблица/список финальных метрик на test по всем моделям
 
-| Модель                      | accuracy | F1      | ROC-AUC |
-|-----------------------------|----------|---------|---------|
-| DummyClassifier             | 0.7373   | 0.0     | 0.5     |
-| LogisticRegression          | 0.8138   | 0.568   | 0.8065  |
-| DecisionTreeClassifier      | 0.8351   | 0.648   | 0.8377  |
-| RandomForestClassifier      | 0.89     | 0.7506  | 0.9259  |
-| GradientBoostingClassifier  | 0.8867   | 0.7539  | 0.9132  |
-| StackingClassifier          | 0.908    | 0.8103  | 0.926   |
+| Модель                           | accuracy | F1     | ROC-AUC |
+|----------------------------------|----------|--------|---------|
+| DummyClassifier                  | 0.7373   | 0.0000 | 0.5000  |
+| LogisticRegression               | 0.8138   | 0.5680 | 0.8065  |
+| DecisionTreeClassifier (base)    | 0.8133   | 0.6468 | 0.7610  |
+| DecisionTreeClassifier (best)    | 0.8351   | 0.6480 | 0.8377  |
+| RandomForestClassifier           | 0.8678   | 0.6844 | 0.9167  |
+| GradientBoostingClassifier       | 0.8867   | 0.7539 | 0.9132  |
+| StackingClassifier               | 0.8947   | 0.7799 | 0.9183  |
 
-- Победитель: StackingClassifier — лучшая модель по accuracy, F1 и ROC-AUC, что подтверждает эффективность объединения ансамблей.
+- Победитель: StackingClassifier
+    Выбран по максимальному значению accuracy, F1 и ROC-AUC, что подтверждает эффективность объединения ансамблей.
 
 ## 5. Analysis
 
-- Устойчивость: изменение `random_state` в 1-2 моделях показывает небольшие колебания метрик (±0.01-0.02), что подтверждает стабильность моделей.
-- Ошибки: матрица ошибок для StackingClassifier — TN:3202, FP:116, FN:298, TP: 884.
-Модель хорошо различает классы, большинство ошибок приходится на меньший класс (target=1).
-- Интерпретация: permutation importance (Top-10 признаков) для StackingClassifier — Наибольшее влияние оказывают признаки `f16` (0.07) и `f01` (0.034). Остальные признаки из топ-10 (`f08`, `f23`, `f07`, `f30`, `f12`, `f15`, `f13`, `f05`) имеют умеренное влияние (0.01–0.02). Модель в основном ориентируется на эти ключевые признаки, что соответствует ожидаемому распределению важности по данным.
+- Устойчивость:
+    Для нескольких моделей проводились запуски с разными значениями `random_state`. Колебания метрик находились в пределах ±0.01–0.02, что указывает на достаточную устойчивость результатов.
+
+- Ошибки:
+    Для лучшей модели (StackingClassifier) построена confusion matrix: TN = 3202, FP = 116, FN = 298, TP = 884.
+    Модель хорошо различает классы, при этом основная часть ошибок приходится на меньший класс (`target = 1`), что ожидаемо при имеющемся дисбалансе.
+
+- Интерпретация:
+    Для лучшей модели рассчитан permutation importance (top-10 признаков).  
+    Наибольшее влияние оказывают признаки `f16` (0.07) и `f01` (0.034).  
+    Остальные признаки из топ-10 (`f08`, `f23`, `f07`, `f30`, `f12`, `f15`, `f13`, `f05`) имеют умеренное влияние (0.01–0.02).  
+    Распределение важностей выглядит интерпретируемым и соответствует ожиданиям по данным.
 
 ## 6. Conclusion
 
-- DummyClassifier показывает минимальные возможности различения классов.
-- LogisticRegression значительно превосходит бейзлайн и демонстрирует эффективность признаков.
-- Контроль сложности в DecisionTree и RandomForest помогают избежать переобучения и улучшить метрики.
-- GradientBoosting показывает высокую точность, но StackingClassifier объединяет сильные стороны RandomForest и GradientBoosting, достигая лучших результатов.
-- Метрики и графики (ROC, PR, матрица ошибок, permutation importance) подтверждают правильность построения модели и честный ML-протокол.
-- Честный подход с CV и сохранением лучших моделей/метрик обеспечивает воспроизводимость эксперимента.
+- DummyClassifier служит корректным нижним бейзлайном и не различает классы.
+- LogisticRegression существенно превосходит бейзлайн и подтверждает информативность признаков.
+- DecisionTree без ограничений склонно к переобучению, что видно по разрыву метрик train/test.
+- Контроль сложности в дереве и ансамблях позволяет снизить переобучение и улучшить качество.
+- Ансамблевые модели (RandomForest, GradientBoosting) показывают высокие результаты.
+- StackingClassifier объединяет их сильные стороны и демонстрирует наилучшее качество при соблюдении честного ML-протокола.

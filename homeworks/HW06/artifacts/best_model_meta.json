@@ -1,9 +1,9 @@
 {
     "model_name": "StackingClassifier",
     "metrics": {
-        "accuracy": 0.908,
-        "f1": 0.8102658111824015,
-        "roc_auc": 0.9259540587208774
+        "accuracy": 0.8946666666666667,
+        "f1": 0.7799442896935933,
+        "roc_auc": 0.9183378056827904
     },
     "best_params": {
         "DecisionTreeClassifier": {
@@ -11,9 +11,9 @@
             "min_samples_leaf": 20
         },
         "RandomForestClassifier": {
-            "max_depth": null,
-            "max_features": "log2",
-            "min_samples_leaf": 1
+            "max_depth": 10,
+            "max_features": "sqrt",
+            "min_samples_leaf": 5
         }
     }
 }

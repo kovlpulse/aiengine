@@ -9,20 +9,27 @@
         "f1": 0.568041237113402,
         "roc_auc": 0.8064607346076214
     },
-    "DecisionTreeClassifier": {
+    "DecisionTreeClassifier (base)": {
+        "accuracy": 0.8133333333333334,
+        "f1": 0.6467619848612279,
+        "roc_auc": 0.7609501167298508,
+        "train_roc_auc": 1.0
+    },
+    "DecisionTreeClassifier (best)": {
         "accuracy": 0.8351111111111111,
         "f1": 0.6480075901328273,
         "roc_auc": 0.837709300345039,
+        "train_roc_auc": 0.9280304246400763,
         "best_max_depth": 10,
         "best_min_samples_leaf": 20
     },
     "RandomForestClassifier": {
-        "accuracy": 0.89,
-        "f1": 0.7506297229219143,
-        "roc_auc": 0.9258579312553481,
-        "best_max_depth": null,
-        "best_min_samples_leaf": 1,
-        "best_max_features": "log2"
+        "accuracy": 0.8677777777777778,
+        "f1": 0.6843501326259946,
+        "roc_auc": 0.9166671766266962,
+        "max_depth": 10,
+        "max_features": "sqrt",
+        "min_samples_leaf": 5
     },
     "GradientBoostingClassifier": {
         "accuracy": 0.8866666666666667,
@@ -30,8 +37,8 @@
         "roc_auc": 0.9132142372680828
     },
     "StackingClassifier": {
-        "accuracy": 0.908,
-        "f1": 0.8102658111824015,
-        "roc_auc": 0.9259540587208774
+        "accuracy": 0.8946666666666667,
+        "f1": 0.7799442896935933,
+        "roc_auc": 0.9183378056827904
     }
 }
