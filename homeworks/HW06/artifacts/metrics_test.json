@@ -18,10 +18,7 @@
     "DecisionTreeClassifier (best)": {
         "accuracy": 0.8351111111111111,
         "f1": 0.6480075901328273,
-        "roc_auc": 0.837709300345039,
-        "train_roc_auc": 0.9280304246400763,
-        "best_max_depth": 10,
-        "best_min_samples_leaf": 20
+        "roc_auc": 0.837709300345039
     },
     "RandomForestClassifier": {
         "accuracy": 0.8677777777777778,
