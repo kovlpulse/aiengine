@@ -1,0 +1,8 @@
+experiment_id,dataset,seed,model_summary,optimizer,lr,momentum,weight_decay,epochs_trained,best_val_accuracy,best_val_loss
+E1,CIFAR10,666,512-256 ReLU,Adam,0.001,0,0,10,0.4804,1.4687
+E2,CIFAR10,666,512-256 ReLU Dropout0.3,Adam,0.001,0,0,10,0.4408,1.6048
+E3,CIFAR10,666,512-256 BN ReLU,Adam,0.001,0,0,10,0.5207,1.4004
+E4,CIFAR10,666,512-256 BN ReLU + EarlyStopping,Adam,0.001,0,0,7,0.4804,1.4326
+O1,CIFAR10,666,512-256 BN ReLU,Adam,0.1,0,0,6,0.4665,1.5272
+O2,CIFAR10,666,512-256 BN ReLU,Adam,0.00001,0,0,6,0.4823,1.5222
+O3,CIFAR10,666,512-256 BN ReLU,SGD,0.01,0.9,0.0001,12,0.4703,1.5192

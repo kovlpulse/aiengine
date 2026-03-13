@@ -1,0 +1,21 @@
+{
+  "dataset": "CIFAR10",
+  "seed": 666,
+  "model": {
+    "hidden_layers": [512, 256],
+    "activation": "ReLU",
+    "dropout": 0.0,
+    "batchnorm": true
+  },
+  "optimizer": {
+    "name": "Adam",
+    "lr": 0.001,
+    "momentum": 0,
+    "weight_decay": 0
+  },
+  "training": {
+    "batch_size": 128,
+    "epochs_max": 50,
+    "early_stopping_patience": 4
+  }
+}
